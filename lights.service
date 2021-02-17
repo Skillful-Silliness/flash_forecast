@@ -1,0 +1,14 @@
+[Unit]
+Description=Weather lights
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 -u neopixel_rpi_simpletest.py
+WorkingDirectory=/home/pi/Documents/weatherLights
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target
