@@ -8,6 +8,6 @@
 
 - Connecting raspberry pi to neopixels: https://learn.adafruit.com/neopixels-on-raspberry-pi
 - SSH into Raspberry pi
-- OpenWeatherMap -->  https://openweathermap.org/api/one-call-api   pyowm   https://pyowm.readthedocs.io/en/latest/
+- OpenWeatherMap https://openweathermap.org/api/one-call-api --> pyowm https://pyowm.readthedocs.io/en/latest/
 
 
