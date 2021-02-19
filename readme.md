@@ -1,4 +1,4 @@
-#Weather Lights
+# Weather Lights
 
 **Problem**: How might we represent weather information in a beautiful and intuitive display?
 **Solution**: Display the weather on a colorful LED light strip using a raspberry pi connected to live weather info and forecasts
