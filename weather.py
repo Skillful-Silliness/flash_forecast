@@ -12,7 +12,6 @@ t_lon = -120.179020
 mgr = owm.weather_manager()
 
 td = mgr.weather_at_coords(t_lat, t_lon).weather.temperature('fahrenheit')
-works = td['temp']
 
 
-print(works)
+print(td)
