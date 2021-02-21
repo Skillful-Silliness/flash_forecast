@@ -12,14 +12,15 @@ import neopixel
 pixel_pin = board.D18
 
 # The number of NeoPixels
-num_pixels = 36
+#num_pixels = 263 #5m strip
+num_pixels = 36 #small box
 
 # The order of the pixel colors - RGB or GRB. Some NeoPixels have red and green reversed!
 # For RGBW NeoPixels, simply change the ORDER to RGBW or GRBW.
 ORDER = neopixel.GRB
 
 pixels = neopixel.NeoPixel(
-    pixel_pin, num_pixels, brightness=0.2, auto_write=False, pixel_order=ORDER
+    pixel_pin, num_pixels, brightness=0.9, auto_write=False, pixel_order=ORDER
 )
 
 
@@ -30,7 +31,8 @@ def wheel(pos):
         r = g = b = 0
     elif pos < 85:
         r = int(pos * 3)
-        g = int(255 - pos * 3)
+        g = 0
+       # g = int(255 - pos * 3)
         b = 0
     elif pos < 170:
         pos -= 85
@@ -40,7 +42,8 @@ def wheel(pos):
     else:
         pos -= 170
         r = 0
-        g = int(pos * 3)
+       # g = int(pos * 3)
+        g = 0
         b = int(255 - pos * 3)
     return (r, g, b) if ORDER in (neopixel.RGB, neopixel.GRB) else (r, g, b, 0)
 
@@ -56,24 +59,24 @@ def rainbow_cycle(wait):
 
 while True:
     # Comment this line out if you have RGBW/GRBW NeoPixels
-    pixels.fill((255, 0, 0))
+   # pixels.fill((255, 0, 0))
     # Uncomment this line if you have RGBW/GRBW NeoPixels
     # pixels.fill((255, 0, 0, 0))
-    pixels.show()
-    time.sleep(1)
+   # pixels.show()
+   # time.sleep(1)
 
     # Comment this line out if you have RGBW/GRBW NeoPixels
-    pixels.fill((0, 255, 0))
+   # pixels.fill((0, 255, 0))
     # Uncomment this line if you have RGBW/GRBW NeoPixels
     # pixels.fill((0, 255, 0, 0))
-    pixels.show()
-    time.sleep(1)
+   # pixels.show()
+   # time.sleep(1)
 
     # Comment this line out if you have RGBW/GRBW NeoPixels
-    pixels.fill((0, 0, 255))
+   # pixels.fill((0, 0, 255))
     # Uncomment this line if you have RGBW/GRBW NeoPixels
     # pixels.fill((0, 0, 255, 0))
-    pixels.show()
-    time.sleep(1)
+   # pixels.show()
+   # time.sleep(1)
 
-    rainbow_cycle(0.001)  # rainbow cycle with 1ms delay per step
+    rainbow_cycle(0.0001)  # rainbow cycle with 1ms delay per step

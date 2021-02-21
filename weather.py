@@ -6,19 +6,16 @@ load_dotenv()
 
 owm = OWM(os.getenv("OWM_API_KEY"))
 
+# Truckee, CA
 t_lat = 39.324314
 t_lon = -120.179020
 
 mgr = owm.weather_manager()
 
-# this gives an array of pyowm.weatherapi25.weather objects https://pyowm.readthedocs.io/en/latest/_modules/pyowm/weatherapi25/weather.html
-forecast = mgr.one_call(lat=t_lat, lon=t_lon).forecast_daily
+one_call = mgr.one_call(lat = t_lat, lon = t_lon, exclude='minutely', units='imperial')
+humidity = one_call.current.humidity
+temp = one_call.current.temperature()
 
+print("Humidity:", humidity)
+print("Temperature:", temp['temp'])
 
-def get_temp(weather):
-    return weather.temperature('fahrenheit')
-
-
-temps = map(get_temp, forecast)
-
-print(list(temps))
