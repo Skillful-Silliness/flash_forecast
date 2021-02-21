@@ -10,8 +10,13 @@ t_lat = 39.324314
 t_lon = -120.179020
 
 mgr = owm.weather_manager()
+one_call = mgr.one_call(lat=t_lat, lon=t_lon)
 
-td = mgr.weather_at_coords(t_lat, t_lon).weather.temperature('fahrenheit')
+
+def get_temp(weather):
+    return weather.temperature('fahrenheit')
 
 
-print(td)
+temps = map(get_temp, one_call.forecast_daily)
+
+print(list(temps))
