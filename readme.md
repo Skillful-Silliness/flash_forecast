@@ -7,9 +7,9 @@
 ## Requirements
 python 3.6.0 or above
 
-## Set-up
-
+## Reference
 - Connecting raspberry pi to neopixels: https://learn.adafruit.com/neopixels-on-raspberry-pi
+- CircuitPython LED Animations https://learn.adafruit.com/circuitpython-led-animations/
 - SSH into Raspberry pi: https://www.raspberrypi.org/documentation/remote-access/ssh/
 - OpenWeatherMap https://openweathermap.org/api/one-call-api --> pyowm https://pyowm.readthedocs.io/en/latest/
 
@@ -18,16 +18,19 @@ python 3.6.0 or above
 `sudo pip3 install -r requirements.txt`
 `sudo python3 -m pip install --force-reinstall adafruit-blinka`
 
-#### Set up OpenWeather API credentials
+#### Set environment variables
 1. get an OpenWeather API key from https://openweathermap.org/api
-1. copy `.env.example` to `.env` and update it with your API key
+1. copy `.env.example` to `.env`: `cp .env.example .env`
+1. update `OWM_API_KEY` in `.env` with your OpenWeather API key
+1. set `WEATHERLIGHTS_LAT` and `WEATHERLIGHTS_LON` in `.env` to your latitude and longitude
 
 #### Set up service
-1. update lines 6-7 in lights.service to point to the correct script file where you have installed this
+1. copy `lights.service.example` to `lights.service`: `cp lights.service.example lights.service`
+1. update lines 6-7 in `lights.service` to point to the correct script file where you have installed this
 1. to create the service on raspberry pi and set it to run at startup:
     ```
-    sudo cp myscript.service /etc/systemd/system/myscript.service
-    sudo systemctl enable myscript.service
+    sudo cp lights.service /etc/systemd/system/lights.service
+    sudo systemctl enable lights.service
     ```
     you can also start and stop the service with
     ```
@@ -35,6 +38,6 @@ python 3.6.0 or above
     ```
     and
     ```
-    sudo systemctl stop myscript.service
+    sudo systemctl stop lights.service
     ```
     (see https://www.raspberrypi.org/documentation/linux/usage/systemd.md for more info)

@@ -3,7 +3,7 @@ Description=Weather lights
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 -u neopixel_rpi_simpletest.py
+ExecStart=/usr/bin/python3 -u weather_lights.py
 WorkingDirectory=/home/pi/Documents/weatherLights
 StandardOutput=inherit
 StandardError=inherit
