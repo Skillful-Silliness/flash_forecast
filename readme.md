@@ -20,14 +20,14 @@ python 3.6.0 or above
 
 #### Set environment variables
 1. get an OpenWeather API key from https://openweathermap.org/api
-1. copy `.env.example` to `.env`: `cp .env.example .env`
-1. update `OWM_API_KEY` in `.env` with your OpenWeather API key
-1. set `WEATHERLIGHTS_LAT` and `WEATHERLIGHTS_LON` in `.env` to your latitude and longitude
+2. copy `.env.example` to `.env`: `cp .env.example .env`
+3. update `OWM_API_KEY` in `.env` with your OpenWeather API key
+4. set `WEATHERLIGHTS_LAT` and `WEATHERLIGHTS_LON` in `.env` to your latitude and longitude
 
 #### Set up service
 1. copy `lights.service.example` to `lights.service`: `cp lights.service.example lights.service`
-1. update lines 6-7 in `lights.service` to point to the correct script file where you have installed this
-1. to create the service on raspberry pi and set it to run at startup:
+2. update lines 6-7 in `lights.service` to point to the correct script file where you have installed this
+3. to create the service on raspberry pi and set it to run at startup:
     ```
     sudo cp lights.service /etc/systemd/system/lights.service
     sudo systemctl enable lights.service
