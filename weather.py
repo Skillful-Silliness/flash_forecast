@@ -7,6 +7,7 @@ load_dotenv()
 
 DATA_EXPIRATION_SECS = 60
 
+
 class Weather:
     def __init__(self, lat=None, lon=None):
         owm = OWM(os.getenv("OWM_API_KEY"))
@@ -22,10 +23,15 @@ class Weather:
 
     def get_one_call_data(self):
         if self.one_call_data == None or self.is_data_expired():
-            self.one_call_data = self.mgr.one_call(lat=self.lat, lon=self.lon, exclude='minutely', units='imperial')
+            self.one_call_data = self.mgr.one_call(
+                lat=self.lat, lon=self.lon, exclude='minutely', units='imperial')
             self.last_updated = time()
 
         return self.one_call_data
+
+    def go(self):
+        self.get_one_call_data()
+
 
 def demo():
     weather = Weather()
