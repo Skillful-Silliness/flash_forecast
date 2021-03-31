@@ -17,20 +17,33 @@ class Weather:
 
         self.mgr = owm.weather_manager()
         self.one_call_data = None
+        self.forecast_3h_data = None
+        self.last_updated = {}
 
-    def is_data_expired(self):
-        return time() - self.last_updated > DATA_EXPIRATION_SECS
+    def is_data_expired(self, key):
+        return time() - self.last_updated[key] > DATA_EXPIRATION_SECS
+
+    def set_last_updated(self, key):
+        self.last_updated[key] = time()
 
     def get_one_call_data(self):
-        if self.one_call_data == None or self.is_data_expired():
+        if self.one_call_data == None or self.is_data_expired("one_call"):
             self.one_call_data = self.mgr.one_call(
                 lat=self.lat, lon=self.lon, exclude='minutely', units='imperial')
-            self.last_updated = time()
+            self.set_last_updated("one_call")
 
         return self.one_call_data
 
+    def get_forecast_3h_data(self):
+        if self.forecast_3h_data == None or self.is_data_expired("forecast_3h"):
+            self.forecast_3h_data = self.mgr.forecast_at_coords(
+                self.lat, self.lon, "3h")
+            self.set_last_updated("forecast_3h")
+
+        return self.forecast_3h_data
+
     def go(self):
-        self.get_one_call_data()
+        return self.get_one_call_data()
 
 
 def demo():
@@ -42,3 +55,7 @@ def demo():
 
     print("Humidity:", humidity)
     print("Temperature:", temp['temp'])
+
+    forecast = weather.get_forecast_3h_data()
+    for item in forecast.forecast:
+        print(item.reference_time('iso'), item.temperature('fahrenheit'))
