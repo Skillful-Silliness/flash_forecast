@@ -3,6 +3,8 @@ import neopixel
 import time
 import math
 
+import webserver.state_store as state_store
+
 from adafruit_led_animation.animation.sparkle import Sparkle
 from adafruit_led_animation.animation.solid import Solid
 from adafruit_led_animation.color import *
@@ -10,7 +12,8 @@ from adafruit_led_animation.color import *
 from weather import Weather
 
 pixel_pin = board.D18
-num_pixels = 36  # small box
+# num_pixels = 36  # small box
+num_pixels = 285  # test
 # num_pixels = 14  # hours
 # num_pixels = 263  # 5m strip
 ORDER = neopixel.GRB
@@ -24,7 +27,12 @@ def get_led_span(start, end):
     return list(led_range)
 
 
-FORECAST_SPANS = [get_led_span(17, 9), get_led_span(26, 34)]
+FORECAST_SPANS = [
+    get_led_span(51, 0),
+    get_led_span(52, 142),
+    get_led_span(194, 143),
+    get_led_span(284, 195)
+]
 
 COLOR_CONFIG = [
     {
@@ -56,12 +64,12 @@ def fill_led_span(pixels, led_span, weather_objs):
     forecasts_per_led = len(forecast_temps) / len(led_span)
 
     for index, led in enumerate(led_span):
-        print("led: ", led)
         forecast_pos = index * forecasts_per_led
 
         # TODO: clamp to make sure no overflow?
         prev_temp = forecast_temps[math.floor(forecast_pos)]
-        next_temp = forecast_temps[math.ceil(forecast_pos)]
+        next_temp = forecast_temps[min(
+            math.ceil(forecast_pos), len(forecast_temps) - 1)]
 
         progress = math.modf(forecast_pos)[0]
 
@@ -110,13 +118,32 @@ def interpolate_color_value(lower, upper, progress, idx):
     return round(interpolate(lower[idx], upper[idx], progress))
 
 
+def render_pixels(pixels):
+    weather_objs = weather.get_forecast_3h_data().forecast.weathers
+
+    pixels.brightness = state_store.get("brightness")
+
+    for led_span in FORECAST_SPANS:
+        fill_led_span(pixels, led_span, weather_objs)
+
+    pixels.show()
+
+
+def render_off(pixels):
+    pixels.fill(0)
+    pixels.show()
+
+
+print("initializing weather...")
 weather = Weather()
 
-with neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.25, auto_write=False, pixel_order=ORDER) as pixels:
+print("starting lights...")
+
+with neopixel.NeoPixel(
+    pixel_pin, num_pixels, auto_write=False, pixel_order=ORDER
+) as pixels:
     while True:
-        weather_objs = weather.get_forecast_3h_data().forecast.weathers
-
-        for led_span in FORECAST_SPANS:
-            fill_led_span(pixels, led_span, weather_objs)
-
-        pixels.show()
+        if state_store.get("lightson"):
+            render_pixels(pixels)
+        else:
+            render_off(pixels)
