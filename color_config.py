@@ -1,3 +1,5 @@
+from adafruit_led_animation.color import *
+
 COLOR_CONFIG = [
     {
         'color': PURPLE,
@@ -8,15 +10,20 @@ COLOR_CONFIG = [
         'temp': 32.0
     },
     {
-        'color': AQUA,
-        'temp': 55.0
+        'color': GREEN,
+        'temp': 42.0
     },
     {
         'color': YELLOW,
-        'temp': 70.0
+        'temp': 54.0
+    },
+    {
+        'color': ORANGE,
+        'temp': 66.0
+
     },
     {
         'color': RED,
-        'temp': 90.0
+        'temp': 80.0
     }
 ]

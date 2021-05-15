@@ -11,6 +11,7 @@ from adafruit_led_animation.animation.solid import Solid
 from adafruit_led_animation.color import *
 
 from weather import Weather
+from color_config import COLOR_CONFIG
 
 pixel_pin = board.D18
 # num_pixels = 36  # small box
@@ -40,29 +41,6 @@ TEST_SPANS = [
     # get_led_span(52, 142),
     get_led_span(194, 143),
     # get_led_span(284, 195)
-]
-
-COLOR_CONFIG = [
-    {
-        'color': PURPLE,
-        'temp': 0.0
-    },
-    {
-        'color': BLUE,
-        'temp': 32.0
-    },
-    {
-        'color': AQUA,
-        'temp': 55.0
-    },
-    {
-        'color': YELLOW,
-        'temp': 70.0
-    },
-    {
-        'color': RED,
-        'temp': 90.0
-    }
 ]
 
 
