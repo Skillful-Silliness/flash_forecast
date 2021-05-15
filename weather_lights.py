@@ -1,6 +1,10 @@
 import board
+import math
 import neopixel
+import random
 import time
+
+import webserver.state_store as state_store
 
 from adafruit_led_animation.animation.sparkle import Sparkle
 from adafruit_led_animation.animation.solid import Solid
@@ -10,38 +14,31 @@ from weather import Weather
 
 pixel_pin = board.D18
 # num_pixels = 36  # small box
-num_pixels = 14  # hours
+num_pixels = 285  # test
+# num_pixels = 14  # hours
 # num_pixels = 263  # 5m strip
 ORDER = neopixel.GRB
 
-# COLOR_CONFIG = [
-#     {
-#         'color': PURPLE,
-#         'temp': 0.0
-#     },
-#     {
-#         'color': BLUE,
-#         'temp': 32.0
-#     },
-#     {
-#         'color': RED,
-#         'temp': 55.0
-#     },
-#     {
-#         'color': YELLOW,
-#         'temp': 70.0
-#     },
-#     {
-#         'color': RED,
-#         'temp': 90.0
-#     }
-# ]
+
+def get_led_span(start, end):
+    is_reversed = start > end
+
+    led_range = reversed(range(end, start + 1)
+                         ) if is_reversed else range(start, end + 1)
+    return list(led_range)
+
+
+FORECAST_SPANS = [
+    get_led_span(51, 0),
+    get_led_span(52, 142),
+    get_led_span(194, 143),
+    get_led_span(284, 195)
+]
+
 
 COLOR_CONFIG = [
     {
-        hour: 1,
-        led: 5.5
-        # 'color': PURPLE,
+        'color': PURPLE,
         'temp': 0.0
     },
     {
@@ -62,10 +59,70 @@ COLOR_CONFIG = [
     }
 ]
 
-DAY_STARTS = [0, 9, 18, 27]
+
+class SparkleAnimation:
+    def __init__(self):
+        self.next_sparkle_time = 0
+        self.current_sparkles = {}
+
+    def get_snow_sparkles(self, weather_objs):
+        now = time.time()
+
+        # keep only non-expired sparkles
+        self.current_sparkles = {
+            key: sparkle_end for key, sparkle_end in self.current_sparkles.items() if now < sparkle_end}
+
+        if now > self.next_sparkle_time:
+            self.next_sparkle_time = now + random.randrange(20, 250) / 1000
+
+            # get new sparkle pixel
+            statuses = list(map(lambda weather: weather.status, weather_objs))
+
+            snow_indexes = []
+
+            for index, status in enumerate(statuses):
+                if status.lower() == "clouds":
+                    snow_indexes.append(index)
+
+            if len(snow_indexes) > 0:
+                new_sparkle_idx = random.choice(snow_indexes)
+                self.current_sparkles[new_sparkle_idx] = time.time() + 0.001
+
+        return self.current_sparkles
 
 
-def get_bounds(temp):
+sparkle_animation = SparkleAnimation()
+
+
+def fill_led_span(pixels, led_span, weather_objs):
+    forecast_temps = list(map(get_temp_from_weather, weather_objs))
+
+    forecasts_per_led = len(forecast_temps) / len(led_span)
+
+    current_sparkles = sparkle_animation.get_snow_sparkles(weather_objs)
+
+    for index, led in enumerate(led_span):
+        forecast_pos = index * forecasts_per_led
+
+        # TODO: clamp to make sure no overflow?
+        prev_idx = math.floor(forecast_pos)
+        next_idx = min(math.ceil(forecast_pos), len(forecast_temps) - 1)
+
+        prev_temp = forecast_temps[prev_idx]
+        next_temp = forecast_temps[next_idx]
+
+        progress = math.modf(forecast_pos)[0]
+
+        prev_color = WHITE if prev_idx in current_sparkles else get_color_from_temp(
+            prev_temp)
+        next_color = WHITE if next_idx in current_sparkles else get_color_from_temp(
+            next_temp)
+
+        pixels[led] = [interpolate_color_value(
+            prev_color, next_color, progress, idx) for idx in (0, 1, 2)]
+
+
+def get_color_bounds(temp):
     for i in range(len(COLOR_CONFIG)):
         current = COLOR_CONFIG[i]
 
@@ -78,15 +135,23 @@ def get_bounds(temp):
     return [last, last]
 
 
-def get_color(temp):
-    lower, upper, progress = get_interpolation_args(temp)
+def get_color_from_temp(temp):
+    lower, upper, progress = get_color_interpolation_args(temp)
 
     return [interpolate_color_value(lower['color'], upper['color'], progress, idx) for idx in (0, 1, 2)]
 
 
-def get_interpolation_args(temp):
-    lower, upper = get_bounds(temp)
+def get_color_interpolation_args(temp):
+    lower, upper = get_color_bounds(temp)
     return [lower, upper, get_progress(lower['temp'], upper['temp'], temp)]
+
+
+def get_status_from_weather(weather):
+    return weather.status
+
+
+def get_temp_from_weather(weather):
+    return weather.temperature('fahrenheit')['temp']
 
 
 def get_progress(lower, upper, current):
@@ -101,20 +166,32 @@ def interpolate_color_value(lower, upper, progress, idx):
     return round(interpolate(lower[idx], upper[idx], progress))
 
 
-weather = Weather(lat=30.2672, lon=-97.7431)
-sparkle = None
+def render_pixels(pixels):
+    weather_objs = weather.get_forecast_3h_data().forecast.weathers
 
-temp = 0
+    pixels.brightness = 1.0  # state_store.get("brightness")
 
-while True:
-    with neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.25, auto_write=False, pixel_order=ORDER) as pixels:
-        while True:
-            for i in range(num_pixels):
-                # TODO: fade between actual temp and feels like
-                temp = weather.get_one_call_data().forecast_daily[i].temperature()[
-                    'temp']
-                pixels[i] = get_color(temp)
-                # print("temperature: ", temp)
+    for led_span in FORECAST_SPANS:
+        fill_led_span(pixels, led_span, weather_objs)
 
-            pixels.show()
-            # Solid(pixels, color).animate()
+    pixels.show()
+
+
+def render_off(pixels):
+    pixels.fill(0)
+    pixels.show()
+
+
+print("initializing weather...")
+weather = Weather()
+
+print("starting lights...")
+
+with neopixel.NeoPixel(
+    pixel_pin, num_pixels, auto_write=False, pixel_order=ORDER
+) as pixels:
+    while True:
+        if state_store.get("lightson"):
+            render_pixels(pixels)
+        else:
+            render_off(pixels)

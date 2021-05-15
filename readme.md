@@ -12,6 +12,7 @@ python 3.6.0 or above
 - CircuitPython LED Animations https://learn.adafruit.com/circuitpython-led-animations/
 - SSH into Raspberry pi: https://www.raspberrypi.org/documentation/remote-access/ssh/
 - OpenWeatherMap https://openweathermap.org/api/one-call-api --> pyowm https://pyowm.readthedocs.io/en/latest/
+- Animation algorithm examples https://www.tweaking4all.com/hardware/arduino/adruino-led-strip-effects/
 
 ## Installation
 #### Install dependencies
