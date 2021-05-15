@@ -42,3 +42,12 @@ python 3.6.0 or above
     sudo systemctl stop lights.service
     ```
     (see https://www.raspberrypi.org/documentation/linux/usage/systemd.md for more info)
+
+#### Mount Raspberry Pi as a Drive on PC
+This allows you to use your code editor and edit files directly on the pi
+
+PC:
+    Install sshfs:  https://github.com/billziss-gh/sshfs-win
+    Connect Raspberry pi:
+        File Explorer > This PC > Map Network Drive
+        Folder:     \\sshfs\pi@[your-pi-ip-here]
