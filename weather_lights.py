@@ -29,12 +29,18 @@ def get_led_span(start, end):
 
 
 FORECAST_SPANS = [
-    get_led_span(51, 0),
+    # get_led_span(0, 51),
     get_led_span(52, 142),
-    get_led_span(194, 143),
+    # get_led_span(194, 143),
     get_led_span(284, 195)
 ]
 
+TEST_SPANS = [
+    get_led_span(0, 51),
+    # get_led_span(52, 142),
+    get_led_span(194, 143),
+    # get_led_span(284, 195)
+]
 
 COLOR_CONFIG = [
     {
@@ -81,7 +87,7 @@ class SparkleAnimation:
             snow_indexes = []
 
             for index, status in enumerate(statuses):
-                if status.lower() == "clouds":
+                if status.lower() == "rain":
                     snow_indexes.append(index)
 
             if len(snow_indexes) > 0:
@@ -92,6 +98,30 @@ class SparkleAnimation:
 
 
 sparkle_animation = SparkleAnimation()
+
+
+def fill_test_span(pixels, led_span):
+    test_temps = list(range(0, 101))
+
+    per_led = len(test_temps) / len(led_span)
+
+    for index, led in enumerate(led_span):
+        pos = index * per_led
+
+        # TODO: clamp to make sure no overflow?
+        prev_idx = math.floor(pos)
+        next_idx = min(math.ceil(pos), len(test_temps) - 1)
+
+        prev_temp = test_temps[prev_idx]
+        next_temp = test_temps[next_idx]
+
+        progress = math.modf(pos)[0]
+
+        prev_color = get_color_from_temp(prev_temp)
+        next_color = get_color_from_temp(next_temp)
+
+        pixels[led] = [interpolate_color_value(
+            prev_color, next_color, progress, idx) for idx in (0, 1, 2)]
 
 
 def fill_led_span(pixels, led_span, weather_objs):
@@ -113,9 +143,9 @@ def fill_led_span(pixels, led_span, weather_objs):
 
         progress = math.modf(forecast_pos)[0]
 
-        prev_color = WHITE if prev_idx in current_sparkles else get_color_from_temp(
+        prev_color = BLUE if prev_idx in current_sparkles else get_color_from_temp(
             prev_temp)
-        next_color = WHITE if next_idx in current_sparkles else get_color_from_temp(
+        next_color = BLUE if next_idx in current_sparkles else get_color_from_temp(
             next_temp)
 
         pixels[led] = [interpolate_color_value(
@@ -171,8 +201,11 @@ def render_pixels(pixels):
 
     pixels.brightness = 1.0  # state_store.get("brightness")
 
-    for led_span in FORECAST_SPANS:
-        fill_led_span(pixels, led_span, weather_objs)
+    for forcast_span in FORECAST_SPANS:
+        fill_led_span(pixels, forcast_span, weather_objs)
+
+    for test_span in TEST_SPANS:
+        fill_test_span(pixels, test_span)
 
     pixels.show()
 
