@@ -47,7 +47,7 @@ python 3.6.0 or above
 This allows you to use your code editor and edit files directly on the pi
 
 PC:
-    Install sshfs:  https://github.com/billziss-gh/sshfs-win
-    Connect Raspberry pi:
-        File Explorer > This PC > Map Network Drive
-        Folder:     \\sshfs\pi@[your-pi-ip-here]
+1. Install sshfs:  https://github.com/billziss-gh/sshfs-win
+2. Connect Raspberry pi:
+- File Explorer > This PC > Map Network Drive
+- Folder:     \\sshfs\pi@[your-pi-ip-here]
