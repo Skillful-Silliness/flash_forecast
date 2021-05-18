@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 ExecStart=/usr/bin/python3 -u weather_lights.py
-WorkingDirectory=/home/pi/Documents/weatherLights
+WorkingDirectory=/home/pi/Documents/weatherlights
 StandardOutput=inherit
 StandardError=inherit
 Restart=always
