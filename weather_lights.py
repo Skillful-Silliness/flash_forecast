@@ -44,11 +44,12 @@ TEST_SPANS = [
 ]
 
 
-class RainPixel:
-    def __init__(self):
+class SparklePixel:
+    def __init__(self, min_duration, max_duration, target_color):
         now = time.time()
 
-        self.duration = random.randrange(250, 750) / 1000
+        self.target_color = target_color
+        self.duration = random.randrange(min_duration, max_duration) / 1000
         self.start_time = now
         self.end_time = now + self.duration
         self.freq_coef = 2 * math.pi / self.duration
@@ -59,33 +60,38 @@ class RainPixel:
 
     def get_color(self, original_color):
         return [interpolate_color_value(
-            original_color, BLUE, self.get_progress(), idx) for idx in (0, 1, 2)]
+            original_color, self.target_color, self.get_progress(), idx) for idx in (0, 1, 2)]
 
 
-class RainAnimation:
-    def __init__(self):
+class SparkleAnimation:
+    def __init__(self, key, min_duration, max_duration, target_color):
         self.current_pixels = {}
+        self.key = key
+        self.min_duration = min_duration
+        self.max_duration = max_duration
+        self.target_color = target_color
 
     def refresh(self, weather_objs):
         now = time.time()
 
-        # keep only non-expired rain pixels
+        # keep only non-expired pixels
         self.current_pixels = {
-            key: rain_pixel for key, rain_pixel in self.current_pixels.items() if now < rain_pixel.end_time}
+            key: pixels for key, pixels in self.current_pixels.items() if now < pixels.end_time}
 
-        # get new sparkle pixel
         statuses = list(map(lambda weather: weather.status, weather_objs))
 
-        rain_indexes = []
+        indexes = []
 
         for index, status in enumerate(statuses):
-            if status.lower() == "rain":
-                rain_indexes.append(index)
+            if status.lower() == self.key.lower():
+                indexes.append(index)
 
-        if len(rain_indexes) > 0:
-            new_pixel_idx = random.choice(rain_indexes)
+        if len(indexes) > 0:
+            new_pixel_idx = random.choice(indexes)
+
             if not new_pixel_idx in self.current_pixels:
-                self.current_pixels[new_pixel_idx] = RainPixel()
+                self.current_pixels[new_pixel_idx] = SparklePixel(
+                    self.min_duration, self.max_duration, self.target_color)
 
     def apply(self, idx, original_color):
         if not idx in self.current_pixels:
@@ -94,41 +100,8 @@ class RainAnimation:
         return self.current_pixels[idx].get_color(original_color)
 
 
-rain_animation = RainAnimation()
-
-
-class SparkleAnimation:
-    def __init__(self):
-        self.next_sparkle_time = 0
-        self.current_sparkles = {}
-
-    def get_snow_sparkles(self, weather_objs):
-        now = time.time()
-
-        # keep only non-expired sparkles
-        self.current_sparkles = {
-            key: sparkle_end for key, sparkle_end in self.current_sparkles.items() if now < sparkle_end}
-
-        if now > self.next_sparkle_time:
-            self.next_sparkle_time = now + random.randrange(20, 250) / 1000
-
-            # get new sparkle pixel
-            statuses = list(map(lambda weather: weather.status, weather_objs))
-
-            snow_indexes = []
-
-            for index, status in enumerate(statuses):
-                if status.lower() == "rain":
-                    snow_indexes.append(index)
-
-            if len(snow_indexes) > 0:
-                new_sparkle_idx = random.choice(snow_indexes)
-                self.current_sparkles[new_sparkle_idx] = time.time() + 0.05
-
-        return self.current_sparkles
-
-
-sparkle_animation = SparkleAnimation()
+rain_animation = SparkleAnimation("clear", 250, 750, BLUE)
+snow_animation = SparkleAnimation("snow", 250, 500, WHITE)
 
 
 def fill_test_span(pixels, led_span):
@@ -160,8 +133,8 @@ def fill_led_span(pixels, led_span, weather_objs):
 
     forecasts_per_led = len(forecast_temps) / len(led_span)
 
-    # current_sparkles = sparkle_animation.get_snow_sparkles(weather_objs)
     rain_animation.refresh(weather_objs)
+    snow_animation.refresh(weather_objs)
 
     for index, led in enumerate(led_span):
         forecast_pos = index * forecasts_per_led
@@ -176,8 +149,11 @@ def fill_led_span(pixels, led_span, weather_objs):
         prev_color_original = get_color_from_temp(prev_temp)
         next_color_original = get_color_from_temp(next_temp)
 
-        prev_color = rain_animation.apply(prev_idx, prev_color_original)
-        next_color = rain_animation.apply(next_idx, next_color_original)
+        # TODO: this is getting messy, clean up animation application
+        prev_color = snow_animation.apply(prev_idx,
+                                          rain_animation.apply(prev_idx, prev_color_original))
+        next_color = snow_animation.apply(next_idx,
+                                          rain_animation.apply(next_idx, next_color_original))
 
         progress = math.modf(forecast_pos)[0]
 
