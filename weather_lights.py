@@ -209,7 +209,7 @@ def interpolate_color_component(lower, upper, progress, idx):
 def render_pixels(pixels):
     weather_objs = weather.get_forecast_3h_data().forecast.weathers
 
-    pixels.brightness = 0.2  # state_store.get("brightness")
+    pixels.brightness = state_store.get("brightness")
 
     for forcast_span in FORECAST_SPANS:
         fill_weather_forecast_span(pixels, forcast_span, weather_objs)
