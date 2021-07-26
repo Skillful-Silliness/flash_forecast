@@ -59,8 +59,7 @@ class SparklePixel:
         return -0.5 * math.cos(self.freq_coef * elapsed) + 0.5
 
     def get_color(self, original_color):
-        return [interpolate_color_value(
-            original_color, self.target_color, self.get_progress(), idx) for idx in (0, 1, 2)]
+        return interpolate_colors(original_color, self.target_color, self.get_progress())
 
 
 class SparkleAnimation:
@@ -100,7 +99,7 @@ class SparkleAnimation:
         return self.current_pixels[idx].get_color(original_color)
 
 
-rain_animation = SparkleAnimation("clear", 250, 750, BLUE)
+rain_animation = SparkleAnimation("rain", 250, 750, BLUE)
 snow_animation = SparkleAnimation("snow", 250, 500, WHITE)
 
 
@@ -124,11 +123,10 @@ def fill_test_span(pixels, led_span):
         prev_color = get_color_from_temp(prev_temp)
         next_color = get_color_from_temp(next_temp)
 
-        pixels[led] = [interpolate_color_value(
-            prev_color, next_color, progress, idx) for idx in (0, 1, 2)]
+        pixels[led] = interpolate_colors(prev_color, next_color, progress)
 
 
-def fill_led_span(pixels, led_span, weather_objs):
+def fill_weather_forecast_span(pixels, led_span, weather_objs):
     forecast_temps = list(map(get_temp_from_weather, weather_objs))
 
     forecasts_per_led = len(forecast_temps) / len(led_span)
@@ -149,16 +147,15 @@ def fill_led_span(pixels, led_span, weather_objs):
         prev_color_original = get_color_from_temp(prev_temp)
         next_color_original = get_color_from_temp(next_temp)
 
-        # TODO: this is getting messy, clean up animation application
         prev_color = snow_animation.apply(prev_idx,
                                           rain_animation.apply(prev_idx, prev_color_original))
         next_color = snow_animation.apply(next_idx,
                                           rain_animation.apply(next_idx, next_color_original))
 
+        # take only the fractional component
         progress = math.modf(forecast_pos)[0]
 
-        pixels[led] = [interpolate_color_value(
-            prev_color, next_color, progress, idx) for idx in (0, 1, 2)]
+        pixels[led] = interpolate_colors(prev_color, next_color, progress)
 
 
 def get_color_bounds(temp):
@@ -177,7 +174,7 @@ def get_color_bounds(temp):
 def get_color_from_temp(temp):
     lower, upper, progress = get_color_interpolation_args(temp)
 
-    return [interpolate_color_value(lower['color'], upper['color'], progress, idx) for idx in (0, 1, 2)]
+    return interpolate_colors(lower['color'], upper['color'], progress)
 
 
 def get_color_interpolation_args(temp):
@@ -201,17 +198,21 @@ def interpolate(lower, upper, progress):
     return (1 - progress) * lower + progress * upper
 
 
-def interpolate_color_value(lower, upper, progress, idx):
+def interpolate_colors(start_color, end_color, progress):
+    return [interpolate_color_component(start_color, end_color, progress, idx) for idx in (0, 1, 2)]
+
+
+def interpolate_color_component(lower, upper, progress, idx):
     return round(interpolate(lower[idx], upper[idx], progress))
 
 
 def render_pixels(pixels):
     weather_objs = weather.get_forecast_3h_data().forecast.weathers
 
-    pixels.brightness = 1.0  # state_store.get("brightness")
+    pixels.brightness = 0.2  # state_store.get("brightness")
 
     for forcast_span in FORECAST_SPANS:
-        fill_led_span(pixels, forcast_span, weather_objs)
+        fill_weather_forecast_span(pixels, forcast_span, weather_objs)
 
     for test_span in TEST_SPANS:
         fill_test_span(pixels, test_span)
