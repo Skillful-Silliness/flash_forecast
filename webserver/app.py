@@ -1,5 +1,8 @@
 from flask import Flask, jsonify, render_template
 import state_store
+import sys
+
+BRIGHTNESS_INCREMENT = 0.05
 
 app = Flask(__name__)
 
@@ -27,16 +30,19 @@ def off():
     return jsonify({"lightson": False})
 
 
-@app.route('/brightness')
-def brightness():
-    return jsonify({"brightness": state_store.get("brightness")})
+@app.route('/status')
+def status():
+    try:
+        return jsonify(state_store.get_all())
+    except:
+        return jsonify({"error": sys.exc_info()[0]})
 
 
 @app.route('/brighter')
 def brighter():
     val = state_store.get("brightness")
 
-    val = min(val + 0.1, 1)
+    val = min(val + BRIGHTNESS_INCREMENT, 1)
 
     state_store.set("brightness", val)
 
@@ -47,7 +53,7 @@ def brighter():
 def darker():
     val = state_store.get("brightness")
 
-    val = max(val - 0.1, 0)
+    val = max(val - BRIGHTNESS_INCREMENT, 0)
 
     state_store.set("brightness", val)
 

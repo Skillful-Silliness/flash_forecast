@@ -36,9 +36,12 @@ function setBrightnessDisplay(res) {
   document.querySelector(".brightness-display").innerHTML = displayBrightness
 }
 
-function initBrightnessDisplay() {
-  apiRequest("brightness")
-    .then((res) => setBrightnessDisplay(res))
+function initState() {
+  apiRequest("status")
+    .then((res) => {
+      console.log({res})
+      setBrightnessDisplay(res)
+    })
     .catch((err) => console.error(err))
 }
 
@@ -48,5 +51,7 @@ document.addEventListener("DOMContentLoaded", function() {
   document.querySelector(".brighter").addEventListener("click", (e) => handleButtonClick(e, "brighter", setBrightnessDisplay))
   document.querySelector(".darker").addEventListener("click", (e) => handleButtonClick(e, "darker", setBrightnessDisplay))
 
-  initBrightnessDisplay()
+  initState()
+
+  setInterval(initState, 1000)
 })

@@ -10,6 +10,13 @@ print("initializing redis store...")
 r = Redis()
 
 
+def get_all():
+    keys = DEFAULTS.keys()
+    values = list(map(loads, r.mget(keys)))
+
+    return dict(zip(keys, values))
+
+
 def get(key):
     if key in DEFAULTS and not r.exists(key):
         r.set(key, dumps(DEFAULTS.get(key)))
