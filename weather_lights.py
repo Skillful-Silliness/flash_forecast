@@ -10,6 +10,7 @@ from adafruit_led_animation.animation.sparkle import Sparkle
 from adafruit_led_animation.animation.solid import Solid
 from adafruit_led_animation.color import *
 
+from aqi import AQI
 from weather import Weather
 from color_config import COLOR_CONFIG
 
@@ -20,6 +21,33 @@ num_pixels = 285  # test
 # num_pixels = 263  # 5m strip
 ORDER = neopixel.GRB
 
+AQI_COLOR_CONFIG = [
+    {
+        'color': GREEN,
+        'aqi': 0.0
+    },
+    {
+        'color': YELLOW,
+        'aqi': 50.0
+    },
+    {
+        'color': ORANGE,
+        'aqi': 101.0
+    },
+    {
+        'color': RED,
+        'aqi': 151.0
+    },
+    {
+        'color': PURPLE,
+        'aqi': 201.0
+    },
+    {
+        'color': (126, 0, 35),
+        'aqi': 301.0
+    },
+]
+
 
 def get_led_span(start, end):
     is_reversed = start > end
@@ -29,11 +57,15 @@ def get_led_span(start, end):
     return list(led_range)
 
 
-FORECAST_SPANS = [
+AQI_FORECAST_SPANS = [
+    get_led_span(284, 195)  # bottom
+]
+
+WEATHER_FORECAST_SPANS = [
     # get_led_span(0, 51),
-    get_led_span(52, 142),
+    get_led_span(52, 142),  # top
     # get_led_span(194, 143),
-    get_led_span(284, 195)
+    # get_led_span(284, 195) # bottom
 ]
 
 TEST_SPANS = [
@@ -126,6 +158,14 @@ def fill_test_span(pixels, led_span):
         pixels[led] = interpolate_colors(prev_color, next_color, progress)
 
 
+def fill_aqi_forecast_span(pixels, led_span, aqi_objs):
+    aqi = aqi_objs[0]['aqi']
+    color = get_color_from_aqi(aqi)
+
+    for index, led in enumerate(led_span):
+        pixels[led] = color
+
+
 def fill_weather_forecast_span(pixels, led_span, weather_objs):
     forecast_temps = list(map(get_temp_from_weather, weather_objs))
 
@@ -158,28 +198,36 @@ def fill_weather_forecast_span(pixels, led_span, weather_objs):
         pixels[led] = interpolate_colors(prev_color, next_color, progress)
 
 
-def get_color_bounds(temp):
-    for i in range(len(COLOR_CONFIG)):
-        current = COLOR_CONFIG[i]
+def get_color_bounds(value, key, config):
+    for i in range(len(config)):
+        current = config[i]
 
-        if temp < current['temp']:
-            prev = COLOR_CONFIG[i - 1] or current
+        if value < current[key]:
+            prev = config[i - 1] or current
             return [prev, current]
 
-    # fallback: temp is greater than max in config
-    last = COLOR_CONFIG[len(COLOR_CONFIG) - 1]
+    # fallback: value is greater than max in config
+    last = config[len(config) - 1]
     return [last, last]
 
 
-def get_color_from_temp(temp):
-    lower, upper, progress = get_color_interpolation_args(temp)
+def get_color_from_aqi(aqi):
+    lower, upper, progress = get_color_interpolation_args(
+        aqi, 'aqi', AQI_COLOR_CONFIG)
 
     return interpolate_colors(lower['color'], upper['color'], progress)
 
 
-def get_color_interpolation_args(temp):
-    lower, upper = get_color_bounds(temp)
-    return [lower, upper, get_progress(lower['temp'], upper['temp'], temp)]
+def get_color_from_temp(temp):
+    lower, upper, progress = get_color_interpolation_args(
+        temp, 'temp', COLOR_CONFIG)
+
+    return interpolate_colors(lower['color'], upper['color'], progress)
+
+
+def get_color_interpolation_args(value, key, config):
+    lower, upper = get_color_bounds(value, key, config)
+    return [lower, upper, get_progress(lower[key], upper[key], value)]
 
 
 def get_status_from_weather(weather):
@@ -208,11 +256,15 @@ def interpolate_color_component(lower, upper, progress, idx):
 
 def render_pixels(pixels):
     weather_objs = weather.get_forecast_3h_data().forecast.weathers
+    aqi_objs = aqi.get_aqi_data()
 
     pixels.brightness = state_store.get("brightness")
 
-    for forcast_span in FORECAST_SPANS:
+    for forcast_span in WEATHER_FORECAST_SPANS:
         fill_weather_forecast_span(pixels, forcast_span, weather_objs)
+
+    for aqi_span in AQI_FORECAST_SPANS:
+        fill_aqi_forecast_span(pixels, aqi_span, aqi_objs)
 
     for test_span in TEST_SPANS:
         fill_test_span(pixels, test_span)
@@ -227,6 +279,9 @@ def render_off(pixels):
 
 print("initializing weather...")
 weather = Weather()
+
+print("initializing aqi...")
+aqi = AQI()
 
 print("starting lights...")
 
