@@ -10,7 +10,7 @@ from adafruit_led_animation.animation.sparkle import Sparkle
 from adafruit_led_animation.animation.solid import Solid
 from adafruit_led_animation.color import *
 
-from aqi import AQI
+# from aqi import AQI
 from weather import Weather
 from color_config import COLOR_CONFIG
 
@@ -27,20 +27,40 @@ AQI_COLOR_CONFIG = [
         'aqi': 0.0
     },
     {
+        'color': GREEN,
+        'aqi': 45.0
+    },
+    {
         'color': YELLOW,
-        'aqi': 50.0
+        'aqi': 55.0
+    },
+    {
+        'color': YELLOW,
+        'aqi': 95.0
     },
     {
         'color': ORANGE,
-        'aqi': 101.0
+        'aqi': 105.0
+    },
+    {
+        'color': ORANGE,
+        'aqi': 145.0
     },
     {
         'color': RED,
-        'aqi': 151.0
+        'aqi': 155.0
+    },
+    {
+        'color': RED,
+        'aqi': 195.0
     },
     {
         'color': PURPLE,
-        'aqi': 201.0
+        'aqi': 205.0
+    },
+    {
+        'color': PURPLE,
+        'aqi': 295.0
     },
     {
         'color': (126, 0, 35),
@@ -57,7 +77,7 @@ def get_led_span(start, end):
     return list(led_range)
 
 
-AQI_FORECAST_SPANS = [
+AQI_SPANS = [
     get_led_span(284, 195)  # bottom
 ]
 
@@ -109,7 +129,7 @@ class SparkleAnimation:
         self.current_pixels = {
             key: pixels for key, pixels in self.current_pixels.items() if now < pixels.end_time}
 
-        statuses = list(map(lambda weather: weather.status, weather_objs))
+        statuses = list(map(get_status_from_weather, weather_objs))
 
         indexes = []
 
@@ -131,8 +151,8 @@ class SparkleAnimation:
         return self.current_pixels[idx].get_color(original_color)
 
 
-rain_animation = SparkleAnimation("rain", 250, 750, BLUE)
-snow_animation = SparkleAnimation("snow", 250, 500, WHITE)
+rain_animation = SparkleAnimation("clear", 250, 750, BLUE)
+snow_animation = SparkleAnimation("clouds", 250, 500, WHITE)
 
 
 def fill_test_span(pixels, led_span):
@@ -158,8 +178,7 @@ def fill_test_span(pixels, led_span):
         pixels[led] = interpolate_colors(prev_color, next_color, progress)
 
 
-def fill_aqi_forecast_span(pixels, led_span, aqi_objs):
-    aqi = aqi_objs[0]['aqi']
+def fill_aqi_span(pixels, led_span, aqi):
     color = get_color_from_aqi(aqi)
 
     for index, led in enumerate(led_span):
@@ -231,11 +250,11 @@ def get_color_interpolation_args(value, key, config):
 
 
 def get_status_from_weather(weather):
-    return weather.status
+    return weather["weather"][0]["main"]
 
 
 def get_temp_from_weather(weather):
-    return weather.temperature('fahrenheit')['temp']
+    return weather['main']['temp']
 
 
 def get_progress(lower, upper, current):
@@ -255,16 +274,15 @@ def interpolate_color_component(lower, upper, progress, idx):
 
 
 def render_pixels(pixels):
-    weather_objs = weather.get_forecast_3h_data().forecast.weathers
-    aqi_objs = aqi.get_aqi_data()
+    weather_objs = weather.get_forecast_3h_data()
 
     pixels.brightness = state_store.get("brightness")
 
     for forcast_span in WEATHER_FORECAST_SPANS:
         fill_weather_forecast_span(pixels, forcast_span, weather_objs)
 
-    for aqi_span in AQI_FORECAST_SPANS:
-        fill_aqi_forecast_span(pixels, aqi_span, aqi_objs)
+    for aqi_span in AQI_SPANS:
+        fill_aqi_span(pixels, aqi_span, weather.get_aqi_data())
 
     for test_span in TEST_SPANS:
         fill_test_span(pixels, test_span)
@@ -279,9 +297,6 @@ def render_off(pixels):
 
 print("initializing weather...")
 weather = Weather()
-
-print("initializing aqi...")
-aqi = AQI()
 
 print("starting lights...")
 

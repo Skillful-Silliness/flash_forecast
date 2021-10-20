@@ -5,6 +5,8 @@ from time import time
 
 DATA_EXPIRATION_SECS = 3600
 DATE_FORMAT = '%A, %b %d %Y %H'
+
+# TODO: set location in params and allow modification from UI
 URL = 'https://www.iqair.com/us/usa/california/truckee'
 
 
@@ -61,7 +63,7 @@ def parse_aqi_data(soup):
     return future_forecasts
 
 
-class AQI:
+class AQIScraper:
     def __init__(self):
         self.aqi_data = None
         self.last_updated = {"aqi": 0}
@@ -81,7 +83,7 @@ class AQI:
 
 
 def demo():
-    forcaster = AQI()
+    forcaster = AQIScraper()
     aqi_data = forcaster.get_aqi_data()
 
     print(aqi_data)
