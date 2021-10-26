@@ -151,7 +151,7 @@ class SparkleAnimation:
         return self.current_pixels[idx].get_color(original_color)
 
 
-rain_animation = SparkleAnimation("clear", 250, 750, BLUE)
+rain_animation = SparkleAnimation("rain", 250, 750, BLUE)
 snow_animation = SparkleAnimation("clouds", 250, 500, WHITE)
 
 
@@ -274,15 +274,19 @@ def interpolate_color_component(lower, upper, progress, idx):
 
 
 def render_pixels(pixels):
-    weather_objs = weather.get_forecast_3h_data()
+    data = weather.refresh_all()
 
     pixels.brightness = state_store.get("brightness")
 
+    # make a copy, then prepend current weather to forecast
+    forecast_objs = data["forecast_3h_data"][:]
+    forecast_objs.insert(0, data["current_weather"])
+
     for forcast_span in WEATHER_FORECAST_SPANS:
-        fill_weather_forecast_span(pixels, forcast_span, weather_objs)
+        fill_weather_forecast_span(pixels, forcast_span, data["forecast_3h_data"])
 
     for aqi_span in AQI_SPANS:
-        fill_aqi_span(pixels, aqi_span, weather.get_aqi_data())
+        fill_aqi_span(pixels, aqi_span, data["aqi"])
 
     for test_span in TEST_SPANS:
         fill_test_span(pixels, test_span)
@@ -304,7 +308,7 @@ with neopixel.NeoPixel(
     pixel_pin, num_pixels, auto_write=False, pixel_order=ORDER
 ) as pixels:
     while True:
-        if state_store.get("lightson"):
+        if state_store.get("lights_on"):
             render_pixels(pixels)
         else:
             render_off(pixels)

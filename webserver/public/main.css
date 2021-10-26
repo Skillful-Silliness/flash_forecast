@@ -8,7 +8,7 @@
  * 2. Prevent adjustments of font size after orientation changes in iOS.
  */
 
- html {
+html {
   line-height: 1.15; /* 1 */
   -webkit-text-size-adjust: 100%; /* 2 */
 }
@@ -85,7 +85,8 @@ a {
 abbr[title] {
   border-bottom: none; /* 1 */
   text-decoration: underline; /* 2 */
-  text-decoration: underline dotted; /* 2 */
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted; /* 2 */
 }
 
 /**
@@ -174,7 +175,8 @@ textarea {
  */
 
 button,
-input { /* 1 */
+input {
+  /* 1 */
   overflow: visible;
 }
 
@@ -184,7 +186,8 @@ input { /* 1 */
  */
 
 button,
-select { /* 1 */
+select {
+  /* 1 */
   text-transform: none;
 }
 
@@ -355,7 +358,9 @@ html {
   box-sizing: border-box;
 }
 
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: inherit;
 }
 
@@ -377,12 +382,27 @@ button {
   }
 }
 
-.btn {
+:root {
+  --brown-sugar: rgba(190,110,70,1);
+  --shadow-blue: rgba(114,134,160,1);
+  --magic-mint: rgba(170,240,209,1);
+  --ebony: rgba(89,89,74,1);
+  --oxford-blue: rgba(16,25,53,1);
+}
+
+body {
+  background-color: rgba(114,134,160,1) !important;
+  background-color: var(--shadow-blue) !important;
+}
+
+.J_5isUpS9_lUD6IV7D6m {
   display: inline-flex;
   align-items: center;
   justify-content: center;
 
-  background-color: #5b9478;
+  background-color: rgba(170,240,209,1);
+
+  background-color: var(--magic-mint);
   color: #fff;
   border-radius: 8px;
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.18);
@@ -395,12 +415,12 @@ button {
   transition: 100ms all ease-in-out;
 }
 
-.btn:hover,
-.btn:active {
+.J_5isUpS9_lUD6IV7D6m:hover,
+.J_5isUpS9_lUD6IV7D6m:active {
   background-color: #47755f;
 }
 
-.btn:focus {
+.J_5isUpS9_lUD6IV7D6m:focus {
   outline-style: solid;
   outline-color: transparent;
   box-shadow: 0 0 0 4px #47755f;
@@ -411,25 +431,26 @@ body {
   padding: 16px;
 }
 
-.controls {
+.jcWl4WC0zPRNeSIJuuQy {
   display: flex;
   justify-content: center;
   margin-bottom: 2em;
 }
 
-.controls * + * {
+.jcWl4WC0zPRNeSIJuuQy * + * {
   margin-left: 1em;
 }
 
-.control-header {
+.HTinxFMSXj5yvQbtGOQI {
   text-align: center;
   width: 100%;
 }
 
-.brightness-display {
+.pr6icZL1KDprH44xyDaY {
   display: flex;
   min-width: 2em;
   font-size: 1.4rem;
   align-items: center;
   justify-content: center;
 }
+

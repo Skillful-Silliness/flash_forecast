@@ -2,13 +2,14 @@ from redis import Redis
 from pickle import loads, dumps
 
 DEFAULTS = {
-    "lightson": True,
+    "lights_on": True,
     "brightness": 0.1,
+    "data": {}
 }
 
 print("initializing redis store...")
-r = Redis()
 
+r = Redis()
 
 def get_all():
     keys = DEFAULTS.keys()
