@@ -54,6 +54,10 @@ def status():
         return json_response_with_cors({"error": sys.exc_info()[0]})
 
 
+@app.route('/api/debug')
+def debug():
+    return json_response_with_cors(state_store.get_all())
+
 @app.route('/api/brighter')
 def brighter():
     val = state_store.get("brightness")

@@ -152,7 +152,7 @@ class SparkleAnimation:
 
 
 rain_animation = SparkleAnimation("rain", 250, 750, BLUE)
-snow_animation = SparkleAnimation("clouds", 250, 500, WHITE)
+snow_animation = SparkleAnimation("snow", 250, 500, WHITE)
 
 
 def fill_test_span(pixels, led_span):
