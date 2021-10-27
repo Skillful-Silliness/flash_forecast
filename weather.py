@@ -12,10 +12,10 @@ DATA_EXPIRATION_SECS = 600
 URL_ROOT = 'https://api.openweathermap.org/data/2.5'
 
 PATHS = {
-    "aqi": "air_pollution",
+    "aqi_current": "air_pollution",
     "aqi_forecast": "air_pollution/forecast",
-    "forecast_3h": "forecast",
-    "current_weather": "weather",
+    "weather_forecast_3h": "forecast",
+    "weather_current": "weather",
 }
 
 
@@ -26,10 +26,10 @@ class Weather:
         self.lon = lon or float(os.getenv("WEATHERLIGHTS_LON"))
 
         self.data = {
-            "aqi": None,
+            "aqi_current": None,
             "aqi_forecast": None,
-            "current_weather": None,
-            "forecast_3h": None,
+            "weather_current": None,
+            "weather_forecast_3h": None,
         }
 
         self.last_updated = {}
@@ -37,10 +37,10 @@ class Weather:
 
     def refresh_all(self):
         return {
-            "aqi": self.get_current_aqi(),
-            "current_weather": self.get_current_weather(),
+            "aqi_current": self.get_current_aqi(),
+            "weather_current": self.get_current_weather(),
             # "aqi_forecast_data": self.get_aqi_forecast_data(),
-            "forecast_3h_data": self.get_forecast_3h_data(),
+            "weather_forecast_3h": self.get_forecast_3h_data(),
         }
 
     def make_request(self, key):
@@ -61,17 +61,17 @@ class Weather:
             self.data[key] = self.make_request(key)
             self.set_last_updated(key)
 
-        state_store.set("data", self.data)
+        state_store.set("data:%s" % key, self.data[key])
         return self.data[key]
 
     def get_forecast_3h_data(self):
-        return self.get_data("forecast_3h")["list"]
+        return self.get_data("weather_forecast_3h")["list"]
 
     def get_current_aqi(self):
-        return self.get_data("aqi")["list"][0]["main"]["aqi"]
+        return self.get_data("aqi_current")["list"][0]["main"]["aqi"]
 
     def get_current_weather(self):
-        return self.get_data("current_weather")
+        return self.get_data("weather_current")
 
 
     def get_aqi_forecast_data(self):

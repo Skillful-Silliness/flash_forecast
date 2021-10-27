@@ -1,10 +1,24 @@
 from redis import Redis
 from pickle import loads, dumps
 
-DEFAULTS = {
-    "lights_on": True,
-    "brightness": 0.1,
-    "data": {}
+GLOBAL_NAMESPACE = "weatherlights"
+
+
+INIT_STATE = {
+    # controls
+    "controls:lights_on": True,
+    "controls:brightness": 0.1,
+
+    # data
+    "data:aqi_current": None,
+    # "data:aqi_forecast": None,
+    "data:weather_forecast_3h": None,
+    "data:weather_current": None,
+
+    #config
+    # "config:lat": None,
+    # "config:lon": None,
+    # "config:owm_api_key": None,
 }
 
 print("initializing redis store...")
@@ -12,15 +26,17 @@ print("initializing redis store...")
 r = Redis()
 
 def get_all():
-    keys = DEFAULTS.keys()
+    return get_keys(INIT_STATE.keys())
+
+def get_keys(keys):
     values = list(map(loads, r.mget(keys)))
 
     return dict(zip(keys, values))
 
-
 def get(key):
-    if key in DEFAULTS and not r.exists(key):
-        r.set(key, dumps(DEFAULTS.get(key)))
+    if key in INIT_STATE and not r.exists(key):
+
+        r.set(key, dumps(INIT_STATE.get(key)))
 
     return loads(r.get(key))
 
