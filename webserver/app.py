@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory
 import state_store
 import sys
 
