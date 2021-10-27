@@ -96,4 +96,4 @@ PC:
 1. Install sshfs:  https://github.com/billziss-gh/sshfs-win
 2. Connect Raspberry pi:
 - File Explorer > This PC > Map Network Drive
-- Folder:     \\sshfs\pi@[your-pi-ip-here]
+- Folder:     `\\sshfs\pi@[your-pi-ip-here]`
