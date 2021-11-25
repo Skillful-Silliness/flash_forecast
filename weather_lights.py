@@ -274,24 +274,27 @@ def interpolate_color_component(lower, upper, progress, idx):
 
 
 def render_pixels(pixels):
-    data = weather.refresh_all()
+    try:
+        data = weather.refresh_all()
 
-    pixels.brightness = state_store.get("controls:brightness")
+        pixels.brightness = state_store.get("controls:brightness")
 
-    # make a copy, then prepend current weather to forecast
-    forecast_objs = data["weather_forecast_3h"][:]
-    forecast_objs.insert(0, data["weather_current"])
+        # make a copy, then prepend current weather to forecast
+        forecast_objs = data["weather_forecast_3h"][:]
+        forecast_objs.insert(0, data["weather_current"])
 
-    for forcast_span in WEATHER_FORECAST_SPANS:
-        fill_weather_forecast_span(pixels, forcast_span, forecast_objs)
+        for forcast_span in WEATHER_FORECAST_SPANS:
+            fill_weather_forecast_span(pixels, forcast_span, forecast_objs)
 
-    for aqi_span in AQI_SPANS:
-        fill_aqi_span(pixels, aqi_span, data["aqi_current"])
+        for aqi_span in AQI_SPANS:
+            fill_aqi_span(pixels, aqi_span, data["aqi_current"])
 
-    for test_span in TEST_SPANS:
-        fill_test_span(pixels, test_span)
+        for test_span in TEST_SPANS:
+            fill_test_span(pixels, test_span)
 
-    pixels.show()
+        pixels.show()
+    except Exception as e:
+        print(e)
 
 
 def render_off(pixels):
