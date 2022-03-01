@@ -5,10 +5,12 @@
 **Solution**: Display the weather on a colorful LED light strip using a raspberry pi connected to live weather info and forecasts
 
 ## Requirements
-python 3.6.0 or above
+- python 3.6.0 or above
+- Rapsberry Pi 3 or 4 (Pi zero lags on animations)
 
 ## Reference
-- Connecting raspberry pi to neopixels: https://learn.adafruit.com/neopixels-on-raspberry-pi
+- Installing Rapsberry Pi OS on a MicroSD card: https://www.raspberrypi.com/software/
+- Connecting Raspberry Pi to NeoPixels: https://learn.adafruit.com/neopixels-on-raspberry-pi
 - CircuitPython LED Animations https://learn.adafruit.com/circuitpython-led-animations/
 - SSH into Raspberry pi: https://www.raspberrypi.org/documentation/remote-access/ssh/
 - OpenWeatherMap https://openweathermap.org/api/one-call-api --> pyowm https://pyowm.readthedocs.io/en/latest/
