@@ -18,6 +18,7 @@
 - OpenWeatherMap https://openweathermap.org/api/one-call-api --> pyowm https://pyowm.readthedocs.io/en/latest/
 - Animation algorithm examples https://www.tweaking4all.com/hardware/arduino/adruino-led-strip-effects/
 - Redis Quick Start https://redis.io/topics/quickstart
+- Wiring diagram: https://learn.adafruit.com/neopixels-on-raspberry-pi/raspberry-pi-wiring#raspberry-pi-wiring-with-level-shifting-chip-3006459-3
 
 ## Installation
 #### Install redis
