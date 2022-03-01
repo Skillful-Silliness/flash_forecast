@@ -7,6 +7,8 @@
 ## Requirements
 - python 3.6.0 or above
 - Rapsberry Pi 3 or 4 (Pi zero lags on animations)
+- WS2812B LEDs (5 volt strip)
+- Power source 5 Amp ... calculate 60mA / pixel
 
 ## Reference
 - Installing Rapsberry Pi OS on a MicroSD card: https://www.raspberrypi.com/software/
