@@ -16,9 +16,10 @@ from color_config import COLOR_CONFIG
 
 pixel_pin = board.D18
 # num_pixels = 36  # small box
-num_pixels = 285  # test
+# num_pixels = 285  # test
 # num_pixels = 14  # hours
 # num_pixels = 263  # 5m strip
+num_pixels = 300 # tree
 ORDER = neopixel.GRB
 
 AQI_COLOR_CONFIG = [
@@ -78,20 +79,22 @@ def get_led_span(start, end):
 
 
 AQI_SPANS = [
-    get_led_span(284, 195)  # bottom
+    # get_led_span(284, 195)  # bottom
 ]
 
 WEATHER_FORECAST_SPANS = [
     # get_led_span(0, 51),
-    get_led_span(52, 142),  # top
+    # get_led_span(52, 142),  # top
     # get_led_span(194, 143),
     # get_led_span(284, 195) # bottom
+
+    get_led_span(299, 0)
 ]
 
 TEST_SPANS = [
-    get_led_span(0, 51),
+    # get_led_span(0, 51),
     # get_led_span(52, 142),
-    get_led_span(194, 143),
+    # get_led_span(194, 143),
     # get_led_span(284, 195)
 ]
 
