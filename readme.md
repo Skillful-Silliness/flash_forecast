@@ -54,6 +54,7 @@
 
 #### Install dependencies
 `sudo pip3 install -r requirements.txt`
+
 `sudo python3 -m pip install --force-reinstall adafruit-blinka`
 
 #### Set environment variables
