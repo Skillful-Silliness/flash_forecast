@@ -21,6 +21,10 @@
 - Wiring diagram: https://learn.adafruit.com/neopixels-on-raspberry-pi/raspberry-pi-wiring#raspberry-pi-wiring-with-level-shifting-chip-3006459-3
 
 ## Installation
+#### Set up Raspberry pi
+1) Connect a monitor and do the following steps directly
+2) SSH into the Raspberry Pi.  If you start headless, connect to your wifi router through a browser (often 192.168.1.1) and look for connections and find your pi.
+
 #### Install redis
 1. go to your home directory `cd`
 1. download the latest redis distribution `wget http://download.redis.io/redis-stable.tar.gz`
