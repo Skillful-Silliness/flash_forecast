@@ -61,7 +61,9 @@
 1. get an OpenWeather API key from https://openweathermap.org/api
 2. copy `.env.example` to `.env`: `cp .env.example .env`
 3. update `OWM_API_KEY` in `.env` with your OpenWeather API key
-4. set `WEATHERLIGHTS_LAT` and `WEATHERLIGHTS_LON` in `.env` to your latitude and longitude
+4. set `WEATHERLIGHTS_LAT` and `WEATHERLIGHTS_LON` in `.env` to your latitude and longitude     
+
+Use https://www.latlong.net/ to find lat / lon
 
 #### Set up services
 see https://www.raspberrypi.org/documentation/linux/usage/systemd.md for more info
