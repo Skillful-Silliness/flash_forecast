@@ -12,6 +12,7 @@
 
 ## Reference
 - Installing Rapsberry Pi OS on a MicroSD card: https://www.raspberrypi.com/software/
+- Raspberry Pi Imager Advanced Options: https://www.tomshardware.com/news/raspberry-pi-imager-now-comes-with-advanced-options
 - Connecting Raspberry Pi to NeoPixels: https://learn.adafruit.com/neopixels-on-raspberry-pi
 - CircuitPython LED Animations https://learn.adafruit.com/circuitpython-led-animations/
 - SSH into Raspberry pi: https://www.raspberrypi.org/documentation/remote-access/ssh/
@@ -21,9 +22,23 @@
 - Wiring diagram: https://learn.adafruit.com/neopixels-on-raspberry-pi/raspberry-pi-wiring#raspberry-pi-wiring-with-level-shifting-chip-3006459-3
 
 ## Installation
+#### Creating Raspberry Pi OS SD Card
+1. Download Raspberry Pi Imager from https://www.raspberrypi.com/software/
+2. With your SD card connected to your computer, open Raspberry Pi Imager
+3. If you would like to work directly on the pi with a keyboard and monitor, you can skip to step 6. If you would like to SSH in from another computer, continue through steps 4-5
+4. press ctrl-shift-X (cmd-shift-X on mac) to open advanced options, and set your options so that you can SSH in easily.
+    - Suggested settings (modify as appropriate for your usage):
+    <img width="756" alt="Screen Shot 2022-04-12 at 6 30 07 PM" src="https://user-images.githubusercontent.com/332167/163081249-840e295f-c83f-4245-9bc8-6766168925b2.png">
+5. Save the advanced settings to return to the main screen
+6. Select your OS (use the first one on the list unless you know you want a different one) and your SD Card. Click "Write"
+7. Once the card is finished writing, put in in your Pi and turn it on!
+
 #### Set up Raspberry pi
-1) Connect a monitor and do the following steps directly
-2) SSH into the Raspberry Pi.  If you start headless, connect to your wifi router through a browser (often 192.168.1.1) and look for connections and find your pi.
+- If you want to work directly on your Pi, connect a monitor and keyboard and open a terminal window, then go to the next section
+- If you want to SSH into the Raspberry Pi from another computer
+    - if you set up advanced options when creating the SD card, you should be able to connect via `ssh <your_username>@weatherlights.local`
+    - if you start headless, connect to your wifi router through a browser (often 192.168.1.1) and look for connections and find your pi
+    - if you are having trouble, this article is a good source for troubleshooting options: https://howchoo.com/g/mgi3mdnlnjq/how-to-log-in-to-a-raspberry-pi-via-ssh
 
 #### Install redis
 1. go to your home directory `cd`
