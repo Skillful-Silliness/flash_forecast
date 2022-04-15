@@ -116,6 +116,12 @@ see https://www.raspberrypi.org/documentation/linux/usage/systemd.md for more in
     sudo systemctl stop weatherlights_web.service
     ```
 
+##### Update web frontend files
+The web frontend repo is at https://github.com/steryereo/weatherlights_frontend. the script below downloads the latest build files from this repo and copies them to the correct directory on your pi
+
+1. `sh update_frontend.sh`
+
+## Development
 #### Mount Raspberry Pi as a Drive on PC
 This allows you to use your code editor and edit files directly on the pi
 
