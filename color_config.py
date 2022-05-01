@@ -25,5 +25,10 @@ COLOR_CONFIG = [
     {
         'color': RED,
         'temp': 80.0
+    },
+    {
+        'color': PURPLE,
+        'temp': 100.0
     }
+    
 ]
