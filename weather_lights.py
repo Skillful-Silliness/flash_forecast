@@ -191,6 +191,9 @@ def fill_aqi_span(pixels, led_span, aqi):
 def fill_weather_forecast_span(pixels, led_span, weather_objs):
     forecast_temps = list(map(get_temp_from_weather, weather_objs))
 
+    times = [w["dt_txt"] for w in weather_objs if "dt_txt" in w]
+    gap_times = list(filter(lambda t: "12:00:00" in t or "00:00:00" in t, times))
+
     forecasts_per_led = len(forecast_temps) / len(led_span)
 
     rain_animation.refresh(weather_objs)
