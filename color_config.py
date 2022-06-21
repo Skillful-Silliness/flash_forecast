@@ -29,4 +29,5 @@ COLOR_CONFIG = [
         'color': PURPLE,
         'temp': 100.0
     }
+    
 ]
