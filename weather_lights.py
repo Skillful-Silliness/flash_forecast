@@ -1,4 +1,5 @@
 import board
+
 import math
 import neopixel
 import random
@@ -82,13 +83,17 @@ AQI_SPANS = [
     # get_led_span(284, 195)  # bottom
 ]
 
+WEATHER_DEMO_SPANS = [
+    get_led_span(60, 0)
+]
+
 WEATHER_FORECAST_SPANS = [
     # get_led_span(0, 51),
     # get_led_span(52, 142),  # top
     # get_led_span(194, 143),
     # get_led_span(284, 195) # bottom
 
-    get_led_span(299, 0)
+    get_led_span(61, 299)
 ]
 
 TEST_SPANS = [
@@ -126,14 +131,15 @@ class SparkleAnimation:
         self.target_color = target_color
 
     def refresh(self, weather_objs):
+
         now = time.time()
+
 
         # keep only non-expired pixels
         self.current_pixels = {
             key: pixels for key, pixels in self.current_pixels.items() if now < pixels.end_time}
 
         statuses = list(map(get_status_from_weather, weather_objs))
-
         indexes = []
 
         for index, status in enumerate(statuses):
@@ -157,7 +163,32 @@ class SparkleAnimation:
 rain_animation = SparkleAnimation("rain", 250, 750, BLUE)
 snow_animation = SparkleAnimation("snow", 250, 500, WHITE)
 
+rain_demo_animation = SparkleAnimation("rain", 250, 750, BLUE)
+snow_demo_animation = SparkleAnimation("snow", 250, 500, WHITE)
 
+def get_dummy_weather(temp):
+    key = "rain" if temp > 32 else "snow"
+    return {"weather": [{"main": key}], "temp": temp}
+
+def fill_weather_demo_span(pixels, led_span):
+    num_leds = len(led_span)
+
+    dummy_weather_objs = []
+
+    for index, led in enumerate(led_span):
+        temp = interpolate(0, 100, index / num_leds) 
+        dummy_weather_objs.append(get_dummy_weather(temp))
+
+    rain_demo_animation.refresh(dummy_weather_objs)
+    snow_demo_animation.refresh(dummy_weather_objs)
+
+    for index, led in enumerate(led_span):
+        temp_color = get_color_from_temp(dummy_weather_objs[index]["temp"])
+        color = rain_demo_animation.apply(index, snow_demo_animation.apply(index, temp_color))
+
+        pixels[led] = color
+    
+    
 def fill_test_span(pixels, led_span):
     test_temps = list(range(0, 101))
 
@@ -205,6 +236,12 @@ def fill_weather_forecast_span(pixels, led_span, weather_objs):
         # TODO: clamp to make sure no overflow?
         prev_idx = math.floor(forecast_pos)
         next_idx = min(math.ceil(forecast_pos), len(forecast_temps) - 1)
+
+        #t = times[prev_idx]
+
+        #if "12:00:00" in t or "00:00:00" in t:
+        #    pixels[led] = BLACK
+        #    continue
 
         prev_temp = forecast_temps[prev_idx]
         next_temp = forecast_temps[next_idx]
@@ -297,6 +334,9 @@ def render_pixels(pixels):
 
         for test_span in TEST_SPANS:
             fill_test_span(pixels, test_span)
+
+        for weather_demo_span in WEATHER_DEMO_SPANS:
+            fill_weather_demo_span(pixels, weather_demo_span)
 
         pixels.show()
     except Exception as e:
