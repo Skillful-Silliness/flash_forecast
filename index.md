@@ -3,26 +3,12 @@
 Beautiful Customizable Forecast
 
 ### How does it work?
-The 
+- Flash Forecast (python script) on a Raspberry Pi 4 requests weather from OpenWeather API
+- Flash Forecast converts weather information to colors and displays on attached LEDs
 
-### Header 3
+### Help make it better!
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/Skillful-Silliness/flash_forecast/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeIKk4nLqEcoCEYDtEIzdl-n8o2QdUM5xq4OB8brIyPQdaD1Q/viewform?embedded=true" width="640" height="4540" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
 
 ### Support or Contact
 
