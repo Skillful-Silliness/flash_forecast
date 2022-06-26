@@ -20,7 +20,7 @@ pixel_pin = board.D18
 # num_pixels = 285  # test
 # num_pixels = 14  # hours
 # num_pixels = 263  # 5m strip
-num_pixels = 300 # tree
+num_pixels = 450 # tree
 ORDER = neopixel.GRB
 
 AQI_COLOR_CONFIG = [
@@ -88,7 +88,8 @@ WEATHER_DEMO_SPANS = [
 ]
 
 WEATHER_FORECAST_SPANS = [
-    get_led_span(97, 299)
+    get_led_span(97, 299),
+    get_led_span(300, 449)
 ]
 
 TEST_SPANS = []
@@ -306,7 +307,7 @@ def interpolate_color_component(lower, upper, progress, idx):
 
 
 def render_pixels(pixels):
-    #try:
+    try:
         data = weather.refresh_all()
 
         pixels.brightness = state_store.get("controls:brightness")
@@ -328,8 +329,8 @@ def render_pixels(pixels):
             fill_weather_demo_span(pixels, weather_demo_span)
 
         pixels.show()
-    #except Exception as e:
-    #    print(e)
+    except Exception as e:
+        print(e)
 
 
 def render_off(pixels):
