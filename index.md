@@ -8,7 +8,7 @@ Beautiful Customizable Forecast
 
 ### Help make it better!
 
-<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeIKk4nLqEcoCEYDtEIzdl-n8o2QdUM5xq4OB8brIyPQdaD1Q/viewform?embedded=true" width="640" height="4540" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeIKk4nLqEcoCEYDtEIzdl-n8o2QdUM5xq4OB8brIyPQdaD1Q/viewform?embedded=true" onload="this.width=screen.width" height="4540" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
 
 ### Support or Contact
 
