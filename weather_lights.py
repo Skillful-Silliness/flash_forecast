@@ -80,28 +80,18 @@ def get_led_span(start, end):
 
 
 AQI_SPANS = [
-    # get_led_span(284, 195)  # bottom
+    get_led_span(61, 96)
 ]
 
 WEATHER_DEMO_SPANS = [
-    get_led_span(60, 0)
+    get_led_span(0, 60)
 ]
 
 WEATHER_FORECAST_SPANS = [
-    # get_led_span(0, 51),
-    # get_led_span(52, 142),  # top
-    # get_led_span(194, 143),
-    # get_led_span(284, 195) # bottom
-
-    get_led_span(61, 299)
+    get_led_span(97, 299)
 ]
 
-TEST_SPANS = [
-    # get_led_span(0, 51),
-    # get_led_span(52, 142),
-    # get_led_span(194, 143),
-    # get_led_span(284, 195)
-]
+TEST_SPANS = []
 
 
 class SparklePixel:
@@ -222,10 +212,9 @@ def fill_aqi_span(pixels, led_span, aqi):
 def fill_weather_forecast_span(pixels, led_span, weather_objs):
     forecast_temps = list(map(get_temp_from_weather, weather_objs))
 
-    times = [w["dt_txt"] for w in weather_objs if "dt_txt" in w]
-    gap_times = list(filter(lambda t: "12:00:00" in t or "00:00:00" in t, times))
-
     forecasts_per_led = len(forecast_temps) / len(led_span)
+
+    blanks = {}
 
     rain_animation.refresh(weather_objs)
     snow_animation.refresh(weather_objs)
@@ -233,15 +222,15 @@ def fill_weather_forecast_span(pixels, led_span, weather_objs):
     for index, led in enumerate(led_span):
         forecast_pos = index * forecasts_per_led
 
-        # TODO: clamp to make sure no overflow?
         prev_idx = math.floor(forecast_pos)
         next_idx = min(math.ceil(forecast_pos), len(forecast_temps) - 1)
 
-        #t = times[prev_idx]
+        t = weather_objs[prev_idx]["dt_txt"] if "dt_txt" in weather_objs[prev_idx] else ""
 
-        #if "12:00:00" in t or "00:00:00" in t:
-        #    pixels[led] = BLACK
-        #    continue
+        if ("12:00:00" in t or "00:00:00" in t) and t not in blanks:
+            blanks[t] = True
+            pixels[led] = BLACK
+            continue
 
         prev_temp = forecast_temps[prev_idx]
         next_temp = forecast_temps[next_idx]
@@ -317,7 +306,7 @@ def interpolate_color_component(lower, upper, progress, idx):
 
 
 def render_pixels(pixels):
-    try:
+    #try:
         data = weather.refresh_all()
 
         pixels.brightness = state_store.get("controls:brightness")
@@ -339,8 +328,8 @@ def render_pixels(pixels):
             fill_weather_demo_span(pixels, weather_demo_span)
 
         pixels.show()
-    except Exception as e:
-        print(e)
+    #except Exception as e:
+    #    print(e)
 
 
 def render_off(pixels):

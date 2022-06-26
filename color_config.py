@@ -26,7 +26,7 @@ COLOR_CONFIG = [
         'temp': 80.0
     },
     {
-        'color': PURPLE,
+        'color': MAGENTA,
         'temp': 100.0
     }
     
