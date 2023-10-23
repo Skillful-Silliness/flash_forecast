@@ -31,3 +31,50 @@ COLOR_CONFIG = [
     }
     
 ]
+
+AQI_COLOR_CONFIG = [
+    {
+        'color': GREEN,
+        'aqi': 0.0
+    },
+    {
+        'color': GREEN,
+        'aqi': 45.0
+    },
+    {
+        'color': YELLOW,
+        'aqi': 55.0
+    },
+    {
+        'color': YELLOW,
+        'aqi': 95.0
+    },
+    {
+        'color': ORANGE,
+        'aqi': 105.0
+    },
+    {
+        'color': ORANGE,
+        'aqi': 145.0
+    },
+    {
+        'color': RED,
+        'aqi': 155.0
+    },
+    {
+        'color': RED,
+        'aqi': 195.0
+    },
+    {
+        'color': PURPLE,
+        'aqi': 205.0
+    },
+    {
+        'color': PURPLE,
+        'aqi': 295.0
+    },
+    {
+        'color': (126, 0, 35),
+        'aqi': 301.0
+    },
+]
