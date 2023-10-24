@@ -13,7 +13,7 @@ from adafruit_led_animation.color import *
 
 # from aqi import AQI
 from weather import Weather
-from color_config import COLOR_CONFIG
+from color_config import * #TEMP_COLOR_CONFIG #AQI_COLOR_CONFIG
 
 pixel_pin = board.D18
 # num_pixels = 36  # small box
@@ -23,52 +23,6 @@ pixel_pin = board.D18
 num_pixels = 450 # tree
 ORDER = neopixel.GRB
 
-AQI_COLOR_CONFIG = [
-    {
-        'color': GREEN,
-        'aqi': 0.0
-    },
-    {
-        'color': GREEN,
-        'aqi': 45.0
-    },
-    {
-        'color': YELLOW,
-        'aqi': 55.0
-    },
-    {
-        'color': YELLOW,
-        'aqi': 95.0
-    },
-    {
-        'color': ORANGE,
-        'aqi': 105.0
-    },
-    {
-        'color': ORANGE,
-        'aqi': 145.0
-    },
-    {
-        'color': RED,
-        'aqi': 155.0
-    },
-    {
-        'color': RED,
-        'aqi': 195.0
-    },
-    {
-        'color': PURPLE,
-        'aqi': 205.0
-    },
-    {
-        'color': PURPLE,
-        'aqi': 295.0
-    },
-    {
-        'color': (126, 0, 35),
-        'aqi': 301.0
-    },
-]
 
 
 def get_led_span(start, end):
@@ -272,7 +226,7 @@ def get_color_from_aqi(aqi):
 
 def get_color_from_temp(temp):
     lower, upper, progress = get_color_interpolation_args(
-        temp, 'temp', COLOR_CONFIG)
+        temp, 'temp', TEMP_COLOR_CONFIG)
 
     return interpolate_colors(lower['color'], upper['color'], progress)
 

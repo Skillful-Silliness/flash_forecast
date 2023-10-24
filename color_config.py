@@ -1,6 +1,6 @@
 from adafruit_led_animation.color import *
 
-COLOR_CONFIG = [
+TEMP_COLOR_CONFIG = [
     {
         'color': PURPLE,
         'temp': 0.0
